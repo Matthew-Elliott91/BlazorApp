@@ -1,5 +1,26 @@
-﻿<h3>ShoppingListLayout</h3>
+﻿@inherits LayoutComponentBase
 
+<header>
+	<h1>Our List</h1>
+</header>
+
+<nav>
+	<ul>
+		<li><NavLink href="shoppinglist">Home</NavLink></li>
+		<li><NavLink href="converter">Converter</NavLink></li>
+		<li><NavLink href="counter">Counter</NavLink></li>
+		
+	</ul>
+</nav>
+
+<div>@today.ToShortDateString()</div>
+
+@Body
+
+<footer>
+	@FooterMessage
+</footer>
 @code {
-
+	public string FooterMessage { get; set; } = "Great Shopping!";
+	DateTime today = DateTime.Today;
 }
