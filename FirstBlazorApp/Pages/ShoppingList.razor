@@ -1,6 +1,6 @@
 ﻿@page "/shoppinglist"
 @using FirstBlazorApp.Data
-
+<PageTitle>@title</PageTitle>
 <h3>ShoppingList</h3>
 <ul>
 	@foreach (var grocery in groceries)
@@ -8,13 +8,14 @@
 		<li>@grocery.Name -- @grocery.Price</li>
 
 	}
-	<h2>Total Price = @groceries.Sum(grocery => grocery.Price)</h2>
+	<h2>Total Price = @totalPrice</h2>
 </ul>
 <input placeholder="Grocery Name" @bind="groceryName"/>
 <input placeholder="Grocery Price" @bind="groceryPrice" />
 <button @onclick="AddGrocery">Add</button>
 
 @code {
+	private string title = "Shopping List";
 	private float totalPrice = 0;
 	private string groceryName;
 	private float groceryPrice;
@@ -24,6 +25,7 @@
 		if (!string.IsNullOrWhiteSpace(groceryName) && groceryPrice > 0)
 		{
 			groceries.Add(new Grocery { Name = groceryName, Price = groceryPrice });
+			totalPrice += groceryPrice;
 			
 		}
 		groceryName = string.Empty;
