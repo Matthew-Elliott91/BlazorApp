@@ -5,8 +5,12 @@
 <PageTitle>Weather</PageTitle>
 
 <h1>Weather</h1>
+<div>
+    <label>Please choose a city</label>
+    <input type="text" @bind="@City" placeholder="Enter City Name" />
+	<button class="btn btn-primary" @onclick="GetWeather">Get Weather</button>
+</div>
 
-<p>This component demonstrates fetching data from the server.</p>
 
 @if (weatherData == null)
 {
@@ -14,48 +18,58 @@
 }
 else
 {
-	<table class="table">
-		<h2>Weather Now</h2>
-		<thead>
-		<tr>
-			<th>Temperature</th>
-			<th>Wind</th>
-			<th>Description</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr>
-			<td>@weatherData.Temperature</td>
-			<td>@weatherData.Wind</td>
-			<td>@weatherData.Description</td>
-			
-		</tr>
-		</tbody>
-	</table>
-}
+    <h2>Weather Now</h2>
     <table class="table">
         <thead>
             <tr>
-	            <th>Day</th>
-	            <th>Temperature</th>
-	            <th>Wind</th>
-                
-                
+                <th>Temperature</th>
+                <th>Wind</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in weatherData.Forecast)
-            {
-                <tr>
-                    <td>@forecast.Day</td>
-                    <td>@forecast.Temperature</td>
-                    <td>@forecast.Wind</td>
-                    
-                </tr>
-            }
+            <tr>
+                <td>@weatherData.Temperature</td>
+                <td>@weatherData.Wind</td>
+                <td>@weatherData.Description</td>
+
+            </tr>
         </tbody>
     </table>
 }
+<table class="table">
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Temperature</th>
+            <th>Wind</th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var forecast in weatherData.Forecast)
+        {
+            <tr>
+                @if (forecast.Day == "1")
+                {
+                    <td>Tomorrow</td>
+                } else if (forecast.Day == "2")
+                {
+                    <td>@DateTime.Today.AddDays(2).ToString("dddd")</td>
+                }
+                else
+                {
+                    <td>@DateTime.Today.AddDays(3).ToString("dddd")</td>
+                }
+                <td>@forecast.Temperature</td>
+                <td>@forecast.Wind</td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
 
 @code {
     private WeatherData? weatherData;
@@ -63,6 +77,11 @@ else
     protected override async Task OnInitializedAsync()
     {
         weatherData = await Http.GetFromJsonAsync<WeatherData>("https://goweather.herokuapp.com/weather/sheffield");
+    }
+
+    private async Task GetWeather()
+    {
+	    weatherData = await Http.GetFromJsonAsync<WeatherData>($"https://goweather.herokuapp.com/weather/{City}");
     }
 
     public class WeatherData
@@ -75,16 +94,24 @@ else
 
         public List<Forecast> Forecast { get; set; }
 
-      
+
     }
 
     public class Forecast
     {
-		public string Day { get; set; }
-		public string Temperature { get; set; }
-		public string Wind { get; set; }
+        public string Day { get; set; }
+        public string Temperature { get; set; }
+        public string Wind { get; set; }
 
     }
+
+	private string city = "sheffield";
+   
+	public string City
+	{
+		get => city;
+		set => city = value;
+	}
 
 
 }
