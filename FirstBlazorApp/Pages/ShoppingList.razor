@@ -11,37 +11,51 @@
 		<th></th>
 	</tr>
 	<tbody>
-	@foreach (var grocery in groceries)
-	{
-		<Item GroceryItem="@grocery" OnPriceChanged="HandlePriceChanged"/>
+		@foreach (var grocery in groceries)
+		{
+			<Item GroceryItem="@grocery" OnPriceChanged="HandlePriceChanged"/>
 
-	}
-	<h2>Total (@totalPrice)</h2>
+		}
+		<h2>Total (@totalPrice)</h2>
 	</tbody>
-		
-	
+
+
 </table>
 
-<input placeholder="Grocery Name" @bind="groceryName"/>
-<input placeholder="Grocery Price" @bind="groceryPrice" />
-<button @onclick="AddGrocery">Add Item</button>
+<EditForm Model="@grocery" OnValidSubmit="AddGrocery">
+	<DataAnnotationsValidator></DataAnnotationsValidator>
+	<ValidationSummary />
+	<p>
+		<label>
+			Name: <input type="text" @bind="grocery.Name"/>
+		</label>
+	</p>
+	<p>
+		<label>
+			Price: <input type="number" @bind="grocery.Price"/>
+		</label>
+	</p>
+	<button type="submit">Add Grocery</button>
+</EditForm>
 
 @code {
 	private string title = "Shopping List";
 	private float totalPrice;
 	private string groceryName;
 	private float groceryPrice;
+	private Grocery grocery = new();
 	private List<Grocery> groceries = new();
 	private void AddGrocery()
 	{
-		if (!string.IsNullOrWhiteSpace(groceryName) && groceryPrice > 0)
-		{
-			groceries.Add(new Grocery { Name = groceryName, Price = groceryPrice });
+		
+			groceries.Add(grocery);
+			grocery = new Grocery();
 			UpdateTotalAmount();
+		
+		
 			
-		}
-		groceryName = string.Empty;
-		groceryPrice = 0;
+		
+		
 		
 	}
 
